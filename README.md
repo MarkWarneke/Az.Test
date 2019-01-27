@@ -7,8 +7,25 @@ The module supports Azure Resource Manager Tempalte testing.
 See [Examples](Examples):
 
 ```PowerShell
-# TBD EXAPLE
+Import-Module .\xAz.Test\xAz.Test.psd1
+Get-Command -Module xAz.Test
 
+CommandType     Name                                               Version    Source
+-----------     ----                                               -------    ------
+Function        Format-xAzOutput                                   0.0.1      xAz.Test
+Function        Get-xAzDocs                                        0.0.1      xAz.Test
+Function        Get-xAzError                                       0.0.1      xAz.Test
+Function        Get-xAzFullSyntax                                  0.0.1      xAz.Test
+Function        Get-xAzGuide                                       0.0.1      xAz.Test
+Function        Get-xAzReference                                   0.0.1      xAz.Test
+Function        Get-xAzRemoteTemplate                              0.0.1      xAz.Test
+Function        Get-xAzSchema                                      0.0.1      xAz.Test
+Function        Get-xAzSchemaUri                                   0.0.1      xAz.Test
+Function        New-xAzDeployment                                  0.0.1      xAz.Test
+Function        Test-xAzDeployment                                 0.0.1      xAz.Test
+Function        Test-xAzFolder                                     0.0.1      xAz.Test
+Function        Test-xAzStatic                                     0.0.1      xAz.Test
+Function        Test-xAzTemplateJson                               0.0.1      xAz.Test
 ```
 
 ## Documentation
