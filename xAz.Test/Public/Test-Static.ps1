@@ -1,103 +1,56 @@
 function Test-Static {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "", Justification = "Test needs to display  executed folder")]
     [CmdletBinding()]
     param (
         # Link to the Template
         [Parameter(
-            Mandatory, 
+            Mandatory,
             Position = 0
         )]
-        [string] $TemplateUri
+        [string] $TemplateUri,
+        [switch] $IncludeDefaultSpecs
     )
-    
+
     begin {
     }
-    
+
     process {
 
-        Describe "should be valid" {
+        $null = Test-Path $TemplateUri -ErrorAction Stop
 
-            $null = Test-Path $Path -ErrorAction Stop
-
-            try {
-                $text = Get-Content $Path -Raw -ErrorAction Stop
-            }
-            catch {
-                Write-Host "$($_.Exception) found"
-                Write-Host "$($_.ScriptStackTrace)"
-                break
-            }
-
-            try {
-                $json = ConvertFrom-Json $text -ErrorAction Stop
-            }
-            catch {
-                $JsonException = $_
-            }
-
-
-            it "should throw no expection" {
-                $JsonException | Should -BeNullOrEmpty
-            }
-
-            it "should have content" {
-                $json | Should -Not -BeNullOrEmpty
-            }
-
-
-            $TestCases = @(
-                @{
-                    Expected = "parameters"
-                },
-                @{
-                    Expected = "variables"
-                },
-                @{
-                    Expected = "resources"
-                },
-                @{
-                    Expected = "outputs"
-                }
-            )
-
-            it "should have <Expected>" -TestCases $TestCases {
-                param(
-                    $Expected
-                )
-
-                $json.$Expected | Should -Not -BeNullOrEmpty
-            }
-
-            context "parameters tests" {
-                $parameters = $json.parameters | Get-Member -MemberType NoteProperty
-                foreach ($parameter in $parameters) {
-                    $ParameterName = $($parameter.Name)
-                    it "$ParameterName should have metadata" {
-                        $json.parameters.$ParameterName.metadata | Should -Not -BeNullOrEmpty
-                    }
-                }
-            }
-
-            context "resources tests" {
-                foreach ($resource in $json.resources) {
-                    $type = $resource.type
-                    it "$type should have comment" {
-                        $resource.comments  | Should -Not -BeNullOrEmpty
-                    }
-                }
-            }
-
-            context "resources structure test" {
-                foreach ($resource in $json.resources) {
-                    it "should follow comment > type > apiVersion > name > properties" {
-                        "$resource" | Should -BeLike "*comments*type*apiVersion*name*properties*"
-                    }
-                }
-            }
-
+        try {
+            $text = Get-Content $TemplateUri -Raw -ErrorAction Stop
+        }
+        catch {
+            Write-Host "$($_.Exception) found"
+            Write-Host "$($_.ScriptStackTrace)"
+            break
         }
 
-    }
-    
-    end {
+        try {
+            $json = ConvertFrom-Json $text -ErrorAction Stop
+        }
+        catch {
+            $JsonException = $_
+        }
+
+        Describe "Azure Resource Manager Template Files" {
+            it "should be valid json" {
+                $JsonException | Should -BeNullOrEmpty
+                if ($JsonException) {
+                    break
+                }
+            }
+        }
+
+        if ($IncludeDefaultSpecs) {
+            $Spec += Get-xAzSpec -Spec Static
+        }
+
+        foreach ($specification in $Spec) {
+            Write-Host ("`n Test Specification [{0}]" -f $specification.Name) -ForegroundColor DarkGreen
+            . $specification.Path -Template $json
+        }
+
     }
 }

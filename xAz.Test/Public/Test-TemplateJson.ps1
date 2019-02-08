@@ -7,7 +7,7 @@ function Test-TemplateJson {
     process {
         if (Test-Uri $TemplateUri) {
             Write-Verbose "[$(Get-Date)] Url found, attempting download"
-            $TemplateFile = Get-RemoteTemplate $TemplateUri -ErrorAction Stop
+            $TemplateFile = Get-xAzTestRemoteTemplate $TemplateUri -ErrorAction Stop
         }
         elseif (-Not (Test-Path $TemplateUri)) {
             throw "No file $TemplateUri found"
@@ -16,8 +16,16 @@ function Test-TemplateJson {
             $TemplateFile = $TemplateUri
         }
 
-        $TemplateJSON = Get-Content $TemplateFile -Raw | ConvertFrom-Json -ErrorAction Stop
-        Write-Verbose "[$(Get-Date)]  Template $TemplateJSON valid";
-    }
+        $TemplateJSON = Get-Content $TemplateFile -Raw | ConvertFrom-Json -ErrorAction Continue -ErrorVariable 'ErrorVariable'
 
+        if ($ErrorVariable) {
+            Write-Warning $ErrorVariable
+            return $false
+        }
+        else {
+            Write-Verbose "[$(Get-Date)]  Template $TemplateJSON valid";
+            return $true
+        }
+
+    }
 }

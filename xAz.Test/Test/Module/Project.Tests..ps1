@@ -1,26 +1,20 @@
-$packages = get-package
-if ($packages.Name -contains "PSScriptAnalyzer") {
-    Write-Verbose "PSScriptAnalyzer is installed on the system"
-}
-else {
-    Write-Output "Installing latest version of PSScriptAnalyzer"
+<#
+.SYNOPSIS
+    Runs script analyzer ruls on all PowerShell files found in ModuleBase
+.DESCRIPTION
+   Runs script analyzer ruls on all PowerShell files that match *.ps1, *.psm1, *.psd1  in ModuleBase and all child folders.
+   Invokes all rules from script analyzer execpt those specified in Test.Exceptions.txt
+   Will try to import the module cleanly
+#>
 
-    #install PSScriptAnalyzer
-    Install-Package PSScriptAnalyzer -Force -Scope CurrentUser
-}
+###############################################################################
+# Dot source the import of module
+###############################################################################
+. $PSScriptRoot\shared.ps1
 
-$moduleRoot = Resolve-Path "$PSScriptRoot\.."
-$script:moduleName = Split-Path $moduleRoot -Leaf
+# Excludes list of files
+$FunctionHelpTestExceptions = Get-Content -Path (Join-Path $PSScriptRoot "Test.Exceptions.txt")
 
-# Removes all versions of the module from the session before importing
-Get-Module $ModuleName | Remove-Module
-$ModuleBase = Split-Path -Parent $MyInvocation.MyCommand.Path
-$FunctionHelpTestExceptions = Get-Content -Path "$ModuleBase\Test.Exceptions.txt"
-# For tests in .\Tests subdirectory
-if ((Split-Path $ModuleBase -Leaf) -eq 'Test') {
-    $ModuleBase = Split-Path $ModuleBase -Parent
-}
-Import-Module $ModuleBase\$ModuleName.psd1 -PassThru -ErrorAction Stop | Out-Null
 Describe "PSScriptAnalyzer rule-sets" -Tag Build , ScriptAnalyzer {
 
     $Rules = Get-ScriptAnalyzerRule

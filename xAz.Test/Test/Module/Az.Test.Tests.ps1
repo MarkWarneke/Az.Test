@@ -1,12 +1,14 @@
-$moduleRoot = Resolve-Path "$PSScriptRoot\.."
-$moduleName = Split-Path $moduleRoot -Leaf
+###############################################################################
+# Dot source the import of module
+###############################################################################
+. $PSScriptRoot\shared.ps1
 
 Describe "General project validation: $moduleName"  -Tag Build {
 
     $scripts = Get-ChildItem $moduleRoot -Include *.ps1, *.psm1, *.psd1 -Recurse
 
     # TestCases are splatted to the script so we need hashtables
-    $testCase = $scripts | Foreach-Object {@{file = $_}}         
+    $testCase = $scripts | Foreach-Object {@{file = $_}}
     It "Script <file> should be valid powershell" -TestCases $testCase {
         param($file)
 

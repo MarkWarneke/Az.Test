@@ -5,6 +5,7 @@ function Test-Deployment {
     (
         [Parameter(Mandatory)]
         [ValidateNotNullorEmpty()]
+        [Alias('TemplatePath')]
         [object]
         $TemplateUri,
 
