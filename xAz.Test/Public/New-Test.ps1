@@ -83,7 +83,7 @@ AUthor Lahiri Cristofori
             Mandatory = $false,
             Position = 3
         )]
-        [switch]$IntegrationTest,
+        [switch]$IntegrationTest = $false,
 
         [Parameter(
             Mandatory = $false,
@@ -163,7 +163,7 @@ AUthor Lahiri Cristofori
             $UnitTest = New-UnitTest -ModuleName $ModuleName -FunctionName $FunctionName -SecureStringBlock $SecureStringBlock -ContextBlock $ContextBlock -IntegrationBlock $IntegrationBlock -PrivateBlock $PrivateBlock
 
             #### EXPORT TO FILE ####
-            Export-PesterTestFile -OutputPath $OutputPath -Function $Function -FunctionName $FunctionName -ModuleName $ModuleName -UnitTest $UnitTest
+            Export-PesterTestFile -OutputPath $OutputPath -Function $Function -FunctionName $FunctionName -ModuleName $ModuleName -UnitTest $UnitTest -IntegrationTest:$IntegrationTest
         }
         else {
             return "Not much"

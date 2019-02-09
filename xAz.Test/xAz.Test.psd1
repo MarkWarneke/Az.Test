@@ -87,7 +87,7 @@
     # ModuleList = @()
 
     # List of all files packaged with this module
-    FileList             = @('./Static/URI.psd1', './Rules')
+    FileList             = @('./Rules', './static/shared.ps1', './static/integration.ps1')
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
     PrivateData          = @{

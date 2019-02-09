@@ -5,8 +5,7 @@ function Get-Spec {
         [string] $Spec
     )
     begin {
-        $moduleFileList = $Local:MyInvocation.MyCommand.Module.FileList
-        $staticSpecFolder = $moduleFileList[1]
+        $staticSpecFolder = Get-FileList -Type rules
     }
 
     process {

@@ -28,7 +28,7 @@ ForEach ($folder in $functionFolders) {
     If (Test-Path -Path $folderPath) {
 
         Write-Verbose -Message "Importing from $folder"
-        $functions = Get-ChildItem -Path $folderPath -Filter '*.ps1'
+        $functions = Get-ChildItem -Path $folderPath -Filter '*.ps1' -Recurse
         ForEach ($function in $functions) {
             Write-Verbose -Message "Importing $($function.BaseName)"
             . $($function.FullName)

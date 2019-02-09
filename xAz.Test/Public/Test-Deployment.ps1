@@ -14,16 +14,26 @@ function Test-Deployment {
         [HashTable]
         $templateParameterObject,
 
-        [Parameter(Mandatory)]
-        [ValidateNotNullorEmpty()]
         [string]
         $ResourceGroupName,
 
-        $DeploymentParameter
+        $DeploymentParameter,
+
+        [string] $Location = 'westeurope'
     )
     begin {
         $_debugpreference = $debugpreference
         $debugpreference = "Continue"
+        $RESOURCE_GROUP_NAME = 'TEST_'
+
+        if (-Not $ResourceGroupName) {
+            # Cleanup
+            $AskToRemove = $true
+            # Create unique ResourceGroupName based on current datetime
+            $TestDateTime = Get-Date -Format FileDateTime
+            $ResourceGroupName = '{0}{1}' -f $RESOURCE_GROUP_NAME, $TestDateTime
+            $null = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
+        }
     }
 
     process {
@@ -47,6 +57,11 @@ function Test-Deployment {
     }
 
     end {
+        # Don't remove on error to trace..
+        if ($AskToRemove -or $ENV:BUILD_SERVER) {
+            Get-AzureRmResourceGroup -Name $ResourceGroupName | Remove-AzureRmResourceGroup -Force
+        }
+
         $debugpreference = $_debugpreference
     }
 }
