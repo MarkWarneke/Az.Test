@@ -1,8 +1,8 @@
         . $PSScriptRoot/shared.ps1
 
-        
+
         Describe "Get-xAzSpec parameter tests" -Tags Unit {
-            
+
         }
         Describe "$FunctionName integration tests" -Tags Build {
 
@@ -25,4 +25,4 @@
         }
     }
 }
-        
+

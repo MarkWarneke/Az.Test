@@ -12,7 +12,7 @@ function Get-Spec {
         switch ($spec) {
             'Static' {
                 Write-Verbose -Message ("[$(Get-Date)] load {0}" -f $staticSpecFolder)
-                $specs = Get-ChildItem $staticSpecFolder -Recurse
+                $specs = Get-ChildItem $staticSpecFolder -Recurse -Include '*.spec.ps1'
                 foreach ($file in $specs) {
                     $name = ($file.Name).replace($file.Extension, '').replace('.spec', '')
 

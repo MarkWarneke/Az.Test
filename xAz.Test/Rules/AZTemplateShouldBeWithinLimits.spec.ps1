@@ -37,7 +37,7 @@ foreach ($json in $Template) {
                 $objects = $Json.$Type
             }
             else {
-                $objects = ($json.$Type) | Get-Member -MemberType NoteProperty
+                $objects = ($json.$Type) | Get-Member -MemberType NoteProperty -ErrorAction SilentlyContinue
             }
 
             $objects.Count | Should -BeLessOrEqual $Count
